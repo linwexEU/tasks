@@ -81,7 +81,7 @@
         let socket;
 
         function connectWebSocket() {
-            socket = new WebSocket("ws://localhost:8000/tasks/ws");
+            socket = new WebSocket("ws://https://tasks-app-7rhn.onrender.com/tasks/ws");
 
             socket.onmessage = (event) => {
                 const message = JSON.parse(event.data);
