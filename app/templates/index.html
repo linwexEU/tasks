@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Карточки и WebSocket</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #06425b;
+        }
+
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            border: 1px solid #00ff55;
+            margin: 10px;
+            padding: 10px;
+            width: 20%;
+            background-color: #00b3ce;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgb(255, 255, 255);
+            color: rgb(255, 255, 255);
+        }
+
+        button {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            width: 50%;
+            box-sizing: border-box;
+            color: rgb(255, 255, 255);
+        }
+
+        ul li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="cards-container">
+        {% for task in tasks %}
+            <div class="card">
+                <p>Username: {{ task.name_user }}</p>
+                <p>Name: {{ task.name }}</p>
+                <p>State: {{ task.state }}</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <button onclick="connectWebSocket()">Connect to websocket</button>
+    <ul id="websocketMessages"></ul>
+
+    <script>
+        let socket;
+
+        function connectWebSocket() {
+            socket = new WebSocket("ws://localhost:8000/tasks/ws");
+
+            socket.onmessage = (event) => {
+                const message = JSON.parse(event.data);
+
+                if (message.event === "websocket_task") {
+                    var ulElement = document.getElementById("websocketMessages");
+
+                    var yourHtmlCode = `<li>${message.msg}</li>`;
+
+                    ulElement.innerHTML += yourHtmlCode;
+                }
+            };
+        }
+    </script>
+</body>
+</html>

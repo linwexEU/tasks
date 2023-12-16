@@ -1,0 +1,20 @@
+version: '3.7'
+services:
+  db:
+    image: postgres:15
+    container_name: tasks_db 
+    env_file:
+      - .env-non-dev 
+
+  tasks:
+    image: tasks_image 
+    build: 
+      context: . 
+    container_name: tasks_app 
+    env_file:
+      - .env-non-dev 
+    depends_on:
+      - db 
+    command: ["/task_app/docker/app.sh"]
+    ports: 
+      - 8000:8000
